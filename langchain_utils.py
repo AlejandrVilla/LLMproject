@@ -35,7 +35,6 @@ chat_prompt = ChatPromptTemplate.from_messages(
 )
 
 system_message_2 = "You are a helpful assistant"
-# system_message_2 = "You will receive some places, distances and times to get. You will list the places in ascendent order by ratings and arrival time"
 system_template = "You will receive some places with extra information: distances and times to get, ratings and comments. You will list the places in ascendent order by {order_by}"
 human_template_2 = "Give me the best {n_places} nearest places to get from the following list {places_info}"
 human_template_3 = "Add the following summary of the reviews to your answer: {reviews_summary}"
@@ -43,7 +42,6 @@ human_template_3 = "Add the following summary of the reviews to your answer: {re
 chat_prompt_2 = ChatPromptTemplate.from_messages(
     [
         SystemMessage(content=system_message_2),
-        # SystemMessage(content=system_message_2),
         SystemMessagePromptTemplate.from_template(system_template),
         HumanMessagePromptTemplate.from_template(human_template_2),
         HumanMessagePromptTemplate.from_template(human_template_3)

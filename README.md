@@ -1,3 +1,13 @@
+## ADD YOUR API KEYS
+- Create a GoogleMaps API Key
+- Create an OpenAI API key
+- ADD your API keys to an env.txt file
+
+```
+OPENAI_API_KEY="YOUR_OPEN_AI_API_KEY"
+GOOGLEMAPS_API_KEY="YOUR_GOOGLEMAPS_API_KEY"
+```
+
 ## Create an environment
 ```
 virtualenv -p python[version] [env-name]
