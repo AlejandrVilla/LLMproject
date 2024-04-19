@@ -27,3 +27,8 @@ source ./[env-name]/bin/activate
 ```
 pip isntall -r requirements.txt
 ```
+
+## Run the project
+```
+streamlit run ./app.py
+```
