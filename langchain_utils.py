@@ -24,75 +24,109 @@ from pprint import pprint
 
 # os.environ["OPENAI_API_KEY"] = "YOUR_API_KEY"
 
-system_message = "You will receive a list of place reviews in a json format, generate a summary for each place in the same format"
-human_template = "{places_reviews}"
+# summary reviews templates
+summary_system_message = "You will receive a list of place reviews in a json format, generate a summary for each place in the same format. Put in your answer only the summary"
+summary_human_template = "{places_reviews}"
 
-chat_prompt = ChatPromptTemplate.from_messages(
+summary_chat_prompt = ChatPromptTemplate.from_messages(
     [
-        SystemMessage(content=system_message),
-        HumanMessagePromptTemplate.from_template(human_template)
+        SystemMessage(content=summary_system_message),
+        HumanMessagePromptTemplate.from_template(summary_human_template)
     ]
 )
 
-system_message_2 = "You are a helpful assistant"
-system_template = "You will receive some places with extra information: distances and times to get, ratings and comments. You will list the places in ascendent order by {order_by}"
-human_template_2 = "Give me the best {n_places} nearest places to get from the following list {places_info}"
-human_template_3 = "Add the following summary of the reviews to your answer: {reviews_summary}"
+# recomendation templates
+recomendation_system_message = "You are a helpful assistant. You will receive some places with extra information: distances and times to get, ratings and comments."
+recomendation_system_template = "You will give greater importance to the places by {order_by}"
+recomendation_human_template_1 = "Give me a plan to do an activity using one place for each type of place from the following list {places_info}"
+recomendation_human_template_2 = "Add the following summary of the reviews to your answer: {reviews_summary}"
 
-chat_prompt_2 = ChatPromptTemplate.from_messages(
+recomendation_chat_prompt = ChatPromptTemplate.from_messages(
     [
-        SystemMessage(content=system_message_2),
-        SystemMessagePromptTemplate.from_template(system_template),
-        HumanMessagePromptTemplate.from_template(human_template_2),
-        HumanMessagePromptTemplate.from_template(human_template_3)
+        SystemMessage(content=recomendation_system_message),
+        SystemMessagePromptTemplate.from_template(recomendation_system_template),
+        HumanMessagePromptTemplate.from_template(recomendation_human_template_1),
+        HumanMessagePromptTemplate.from_template(recomendation_human_template_2)
     ]
 )
 
+# activities templates
+activities_system_message = "You will receive a plan from a user to do some activities and you have to extract only places as a python list"
+activities_human_template = "{activities}"
 
-def get_response(order_by, places_info, places_reviews, n_places: int = 5, temperature: float = 0.7):
+activities_chat_prompt = ChatPromptTemplate.from_messages(
+    [
+        SystemMessage(content = activities_system_message),
+        HumanMessagePromptTemplate.from_template(activities_human_template)
+    ]
+)
+
+def extract_places(activities):
+    chat_openai = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature = 0.7)
+    activities_messages = activities_chat_prompt.format(
+        activities=activities
+    )
+    places_type = chat_openai.invoke(activities_messages)
+    places_type = eval(places_type.content)
+    return places_type
+
+
+def get_response(order_by, places_info, places_reviews, temperature: float = 0.7):
     chat_openai = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature = temperature)
 
-    messages = chat_prompt.format(
+    # summary reviews
+    reviews_messages = summary_chat_prompt.format(
         places_reviews=places_reviews
     )
-    # pprint(messages)
-    reviews_summary = chat_openai.invoke(messages)
-    # print(reviews_summary.content)
+    reviews_summary = chat_openai.invoke(reviews_messages)
 
-    messages2 = chat_prompt_2.format(
+    # get recomendations
+    recomendations_messages = recomendation_chat_prompt.format(
         order_by=order_by,
-        n_places=n_places,
         places_info=places_info,
         reviews_summary=reviews_summary.content
     )
-    # pprint(messages2)
 
-    response = chat_openai.invoke(messages2)
+    response = chat_openai.invoke(recomendations_messages)
     return response
 
-def get_recomendation(reference_place, order_by, origin, query_place, radius, mode, language, n_places, temperature):
+def get_recomendation(reference_place, order_by, origin, activities, radius, mode, language, temperature):
     geocode = get_geocode(reference_place)
     coord = get_coord(geocode)
-    nearby_places, place_names, place_ids = get_places(
-        query_place=query_place,
-        coord=coord,
-        radius=radius,
-        language=language
-    )
 
-    places_info, places_reviews = get_place_info(
-        origin=origin,
-        place_names=place_names,
-        place_ids=place_ids,
-        mode=mode
-    )
+    # return query_places for each place
+    places_type = extract_places(activities=activities)
+    all_places_info = {}
+    all_places_reviews = {}
 
+    for query_place in places_type:
+        nearby_places, place_names, place_ids = get_places(
+            query_place=query_place,
+            coord=coord,
+            radius=radius,
+            language=language
+        )
+
+        places_info, places_reviews = get_place_info(
+            origin=origin,
+            place_names=place_names,
+            place_ids=place_ids,
+            mode=mode
+        )
+        all_places_info[query_place] = places_info
+        all_places_reviews[query_place] = places_reviews
+
+    json_object2 = json.dumps(all_places_info, indent=4)
+    with open("all-places-50-m.json", "w") as outfile:
+        outfile.write(json_object2)
+    json_object2 = json.dumps(all_places_reviews, indent=4)
+    with open("all-reviews-50-m.json", "w") as outfile:
+        outfile.write(json_object2)
+        
     response = get_response(
         order_by=order_by,
-        places_info=places_info,
-        places_reviews=places_reviews,
-        n_places=n_places,
+        places_info=all_places_info,
+        places_reviews=all_places_reviews,
         temperature=temperature
     )
-    # print(response.content)
     return response
