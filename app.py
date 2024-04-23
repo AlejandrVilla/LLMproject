@@ -14,7 +14,7 @@ origin = st.sidebar.text_input(label="Start point")
 # activities="fast food and cinema"
 activities = st.sidebar.text_area(label="Enter your activity")
 # radius=25
-radius = st.sidebar.slider("radius of search in meters", 25, 100, 25, step=1)
+radius = st.sidebar.slider("radius of search in meters", 50, 1000, 100, step=10)
 # order_by = "arrival time"
 order_by = st.sidebar.selectbox("order_by",("arrival time", "rating"))
 # mode="walking"
