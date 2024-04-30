@@ -38,7 +38,7 @@ summary_chat_prompt = ChatPromptTemplate.from_messages(
 # recomendation templates
 recomendation_system_message = "You are a helpful assistant. You will receive some places with extra information: distances and times to get, ratings and comments."
 recomendation_system_template = "You will give greater importance to the places by {order_by}"
-recomendation_human_template_1 = "Give me a plan to do an activity using one place for each type of place from the following list {places_info}"
+recomendation_human_template_1 = "Give me a plan to do an activity using one place for each type of place in the same order from the following list {places_info}, if there are no such place, print \"no place availables for the activitie\""
 recomendation_human_template_2 = "Add the following summary of the reviews to your answer: {reviews_summary}"
 
 recomendation_chat_prompt = ChatPromptTemplate.from_messages(
@@ -51,7 +51,12 @@ recomendation_chat_prompt = ChatPromptTemplate.from_messages(
 )
 
 # activities templates
-activities_system_message = "You will receive a plan from a user to do some activities and you have to extract only places as a python list"
+activities_system_message = """\
+You will receive a plan to do some activities and you have to categorize each type of places as a python array, example:
+["restaurant of pollo a la brasa",
+"shopping mall",
+"fast food"]
+"""
 activities_human_template = "{activities}"
 
 activities_chat_prompt = ChatPromptTemplate.from_messages(
@@ -67,6 +72,7 @@ def extract_places(activities):
         activities=activities
     )
     places_type = chat_openai.invoke(activities_messages)
+    print(eval(places_type.content))
     places_type = eval(places_type.content)
     return places_type
 
@@ -91,11 +97,12 @@ def get_response(order_by, places_info, places_reviews, temperature: float = 0.7
     return response
 
 def get_recomendation(reference_place, order_by, origin, activities, radius, mode, language, temperature):
-    geocode = get_geocode(reference_place)
-    coord = get_coord(geocode)
-
     # return query_places for each place
     places_type = extract_places(activities=activities)
+    # return places_type
+
+    geocode = get_geocode(reference_place)
+    coord = get_coord(geocode)
     all_places_info = {}
     all_places_reviews = {}
 
