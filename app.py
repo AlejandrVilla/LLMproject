@@ -1,8 +1,6 @@
-from dotenv import load_dotenv, find_dotenv
-load_dotenv('./env.txt')
-
 import streamlit as st
-from langchain_utils import get_recomendation
+import requests
+import json
 
 st.sidebar.title("Recomendations")
 
@@ -25,15 +23,25 @@ language = st.sidebar.selectbox("language", ("spanish", "english"))
 submit_button = st.sidebar.button("search")
 
 if submit_button:
-    response = get_recomendation(
-        reference_place=reference_place,
-        order_by=order_by,
-        origin=origin,
-        activities=activities,
-        radius=radius,
-        mode=mode,
-        language=language,
-        temperature=temperature
-    )
-    st.title(f"Nearest recomendations for {activities}")
-    st.write(response.content)
+    url = 'http://localhost:5001/get_recomendation'
+    recomendation = {
+        'reference_place': reference_place, 
+        'order_by': order_by,
+        'origin': origin,
+        'activities': activities,
+        'radius': radius,
+        'mode': mode,
+        'language': language,
+        'temperature': temperature
+        }
+    headers = {'Content-Type': 'application/json'}
+
+    response = requests.post(url, headers=headers, data=json.dumps(recomendation))
+
+    if response.status_code == 200:
+        resultado = response.json()
+        st.title(f"Nearest recomendations for {activities}")
+        st.write(resultado['content'])
+    else:
+        resultado = {'error': 'An error occurred while sending information.'}
+        st.write(f"error: {resultado['error']}") 

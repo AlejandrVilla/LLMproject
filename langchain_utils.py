@@ -11,7 +11,7 @@ from langchain_core.messages import (
     AIMessage
 )
 from langchain_openai import ChatOpenAI
-from gmaps_utils import (
+from get_recomendation.gmaps_utils import (
     get_places, 
     get_geocode, 
     get_coord, 
