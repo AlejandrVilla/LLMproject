@@ -1,4 +1,9 @@
 myenv
 __pycache__
 *.json
-env.txt
+!reviews_test.json
+*.txt
+!requirements.txt
+app_monolitic.py
+langchain_utils.py
+.git-message-template
