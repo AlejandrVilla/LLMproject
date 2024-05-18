@@ -38,7 +38,7 @@ def summary_reviews():
             all_places_reviews=all_places_reviews
         )
         reviews_summary = chat_openai.invoke(reviews_messages)
-        
+        print("summary reviews: ",reviews_summary.content)
         # Format data
         # reviews_summary.content -> str
         res_dict = {"reviews_summary": reviews_summary.content}
