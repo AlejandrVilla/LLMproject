@@ -32,7 +32,7 @@ app = Flask(__name__)
 # recomendation templates
 recomendation_system_message = "You are a helpful assistant. You will receive some places with extra information: distances and times to get, ratings and comments."
 recomendation_system_template = "You will give greater importance to the places by {order_by}"
-recomendation_human_template_1 = "Give me a plan to do an activity using one place for each type of place in the same order from the following list {places_info}, if there are no such place, print \"no place availables for the activity\""
+recomendation_human_template_1 = "Prepare a plan to do an activity using one place for each type of activitie in the same order from the following list {places_info}, if there are no such place, print: \"no place availables for the activity\""
 recomendation_human_template_2 = "Add the following summary of the reviews to your answer: {reviews_summary}"
 
 recomendation_chat_prompt = ChatPromptTemplate.from_messages(
@@ -46,17 +46,53 @@ recomendation_chat_prompt = ChatPromptTemplate.from_messages(
 
 # get from summary reviews microservice
 def get_summary_reviews(all_places_reviews):
-    summary_reviews_url = "http://summary_reviews:5003/summary_reviews"
+    # summary_reviews_url = "http://summary_reviews:5003/summary_reviews"
+    summary_reviews_url = "http://127.0.0.1:5003/summary_reviews"
     all_places_reviews = {"all_places_reviews": all_places_reviews}
     headers = {"Content-type": "application/json"}
     response = requests.post(summary_reviews_url, headers=headers, data=json.dumps(all_places_reviews))
-    if response.status_code == 200:
-        res = response.json()
-        reviews_summary = res["reviews_summary"]
-    else:
-        reviews_summary = None
+    if response.status_code != 200:
+        res = "Error trying to connect to summary reviews microservice"
+        return 0, res
+    res = response.json()
+    reviews_summary = res["reviews_summary"]
 
-    return reviews_summary
+    return 1, reviews_summary
+
+def get_filter_prediction(activities):
+    # filter_url = "http://filter:5004/filter"
+    filter_url = "http://127.0.0.1:5004/filter"
+    text_dict = {
+        "text": activities
+    }
+    header = {
+        "Content-type": "application/json"
+    }
+    filter_response = requests.post(filter_url, headers=header, data=json.dumps(text_dict))
+    if filter_response.status_code != 200:
+        res = "Error trying to connect to filter microservice"
+        return 0, res
+    
+    res = filter_response.json()
+    prediction = res["prediction"]
+    return 1, prediction
+
+def get_extract_places(activities, language):
+    # places_url = "http://extract_places:5002/extract_places"
+    places_url = "http://127.0.0.1:5002/extract_places"
+    activities_dict = {
+        "activities": activities,
+        "language": language
+    }
+    headers = {"Content-type": "application/json"}
+    response = requests.post(places_url, headers=headers, data=json.dumps(activities_dict))
+    if response.status_code != 200:
+        res = "Error trying to connect extract places microservice"
+        return 0, res
+    
+    res = response.json()
+    places_type = res["places_type"]
+    return 1, places_type
 
 # get response
 def get_response(order_by, places_info, reviews_summary, temperature: float = 0.7):
@@ -75,88 +111,112 @@ def get_response(order_by, places_info, reviews_summary, temperature: float = 0.
 @app.route('/get_recomendation', methods=['POST'])
 def get_recomendation():
     content_type = request.headers.get('Content-type')
-    if (content_type == "application/json"):
-        data = request.json
-        # Extract information from url
-        reference_place = data.get('reference_place')
-        order_by = data.get('order_by')
-        origin = data.get('origin')
-        activities = data.get('activities')
-        radius = data.get('radius')
-        mode = data.get('mode')
-        language = data.get('language')
-        temperature = data.get('temperature')
-
-        # Return activities from extract_places microservice
-        places_url = "http://extract_places:5002/extract_places"
-        activities_dict = {
-            "activities": activities,
-            "language": language
-        }
-        headers = {"Content-type": "application/json"}
-        response = requests.post(places_url, headers=headers, data=json.dumps(activities_dict))
-        if response.status_code == 200:
-            res = response.json()
-            places_type = res["places_type"]
-        else:
-            places_type = None
-        
-        # Using Google maps
-        geocode = get_geocode(reference_place)
-        coord = get_coord(geocode)
-        all_places_info = {}
-        all_places_reviews = {}
-
-        for query_place in places_type:
-            nearby_places, place_names, place_ids = get_places(
-                query_place=query_place,
-                coord=coord,
-                radius=radius,
-                language=language
-            )
-
-            places_info, places_reviews = get_place_info(
-                origin=origin,
-                place_names=place_names,
-                place_ids=place_ids,
-                mode=mode
-            )
-            all_places_info[query_place] = places_info
-            all_places_reviews[query_place] = places_reviews
-
-        # Save data
-        # json_object2 = json.dumps(all_places_info, indent=4)
-        # with open("all-places-50-m.json", "w") as outfile:
-        #     outfile.write(json_object2)
-        # json_object2 = json.dumps(all_places_reviews, indent=4)
-        # with open("all-reviews-50-m.json", "w") as outfile:
-        #     outfile.write(json_object2)
-            
-        # Get summary reviews from microservice
-        reviews_summary = get_summary_reviews(
-            all_places_reviews = all_places_reviews
-        )
-
-        # Get LLM response
-        res = get_response(
-            order_by=order_by,
-            places_info=all_places_info,
-            reviews_summary=reviews_summary,
-            temperature=temperature
-        )
-
-        # Format data
-        res_dic = {"content": res.content}
-        # print(res_dic)
-        response = jsonify(res_dic)
-        response.status_code = 200
-    else:
+    if (content_type != "application/json"):
         message = {
             "status": 404,
-            "message": "Content type is insuported\n"
+            "message": "Content type is unsuported\n"
         }
         response = jsonify(message)
         response.status_code = 404
+        return response
+    
+    data = request.json
+    activities = data.get('activities')
+    # Extract information from url
+    error, prediction = get_filter_prediction(activities=activities)
+    if error == 0:
+        # Format data
+        res_dic = {"content": prediction}
+        # print(res_dic)
+        response = jsonify(res_dic)
+        response.status_code = 200
+        return response
+
+    if prediction != 2:
+        content = "That is not a good prompt"
+        res_dict = {"content": content}
+        response = jsonify(res_dict)
+        response.status_code = 200
+        return response
+
+    reference_place = data.get('reference_place')
+    order_by = data.get('order_by')
+    origin = data.get('origin')
+    radius = data.get('radius')
+    mode = data.get('mode')
+    language = data.get('language')
+    temperature = data.get('temperature')
+
+    # Return activities from extract_places microservice
+    error, places_type = get_extract_places(activities=activities, language=language)
+    if error == 0:
+        # Format data
+        res_dic = {"content": places_type}
+        # print(res_dic)
+        response = jsonify(res_dic)
+        response.status_code = 200
+        return response
+
+    # Using Google maps
+    geocode = get_geocode(reference_place)
+    coord = get_coord(geocode)
+    all_places_info = {}
+    all_places_reviews = {}
+
+    for query_place in places_type:
+        nearby_places, place_names, place_ids = get_places(
+            query_place=query_place,
+            coord=coord,
+            radius=radius,
+            language=language
+        )
+
+        places_info, places_reviews = get_place_info(
+            origin=origin,
+            place_names=place_names,
+            place_ids=place_ids,
+            mode=mode
+        )
+        all_places_info[query_place] = places_info
+        all_places_reviews[query_place] = places_reviews
+
+    # Save data
+    json_object2 = json.dumps(all_places_info, indent=4)
+    with open("all-places-50-m.json", "w") as outfile:
+        outfile.write(json_object2)
+    json_object2 = json.dumps(all_places_reviews, indent=4)
+    with open("all-reviews-50-m.json", "w") as outfile:
+        outfile.write(json_object2)
+        
+    # Get summary reviews from microservice
+    # all_places_reviews = ""
+    # all_places_info = ""
+    error, reviews_summary = get_summary_reviews(
+        all_places_reviews = all_places_reviews
+    )
+    if error == 0:
+        # Format data
+        res_dic = {"content": reviews_summary}
+        # print(res_dic)
+        response = jsonify(res_dic)
+        response.status_code = 200
+        return response
+
+    # Get LLM response
+    res = get_response(
+        order_by=order_by,
+        places_info=all_places_info,
+        reviews_summary=reviews_summary,
+        temperature=temperature
+    )
+
+    # Format data
+    res_dict = {"content": res.content}
+    
+    # print(res_dic)
+    response = jsonify(res_dict)
+    response.status_code = 200
+
     return response
 
 if __name__ == '__main__':

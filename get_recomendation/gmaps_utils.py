@@ -47,7 +47,7 @@ def get_place_info(origin, place_names, place_ids, mode: str = "walking"):
     places_info = []
     places_reviews = []
 
-    for i in range(min(len(place_names),5)):
+    for i in range(min(len(place_names),3)):
         place_info = {}
         distance, duration = get_directions(origin, place_ids[i], mode=mode)
         place = gmaps.place(place_id=place_ids[i])
