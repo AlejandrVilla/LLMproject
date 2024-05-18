@@ -46,7 +46,7 @@ def extract_places():
         places_type = chat_openai.invoke(activities_messages)
         # print(places_type.content)
         places_type = eval(places_type.content)
-        
+        print("places", places_type)
         # Format data
         # places type -> list
         res_dict = {"places_type": places_type}
