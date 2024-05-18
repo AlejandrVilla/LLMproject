@@ -7,3 +7,5 @@ __pycache__
 app_monolitic.py
 langchain_utils.py
 .git-message-template
+*.zip
+filter/distilbert-filter
