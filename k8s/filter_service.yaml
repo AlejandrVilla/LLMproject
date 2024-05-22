@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: filter
+spec:
+  selector:
+    app: filter
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 5004
+    targetPort: 5004 # container
+    # nodePort: 30038
+    protocol: TCP

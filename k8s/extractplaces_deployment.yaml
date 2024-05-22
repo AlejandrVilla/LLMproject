@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: extract-places
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: extract-places
+  template:
+    metadata:
+      labels:
+        app: extract-places
+    spec:
+      containers:
+      - name: extract-places
+        image: avherrera/extractplaces_ms:v1.1.2
+        ports:
+        - containerPort: 5002
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          # limits:
+          #   memory: "128Mi"
+          #   cpu: "500m"

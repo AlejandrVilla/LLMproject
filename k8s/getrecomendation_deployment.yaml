@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: get-recomendation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: get-recomendation
+  template:
+    metadata:
+      labels:
+        app: get-recomendation
+    spec:
+      containers:
+      - name: get-recomendation
+        image: avherrera/getrecomendation_ms:v1.1.2
+        ports:
+        - containerPort: 5001
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          # limits:
+          #   memory: "128Mi"
+          #   cpu: "500m"

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filter
+  template:
+    metadata:
+      labels:
+        app: filter
+    spec:
+      containers:
+      - name: filter
+        image: avherrera/filter_ms:v1.1.1
+        ports:
+        - containerPort: 5004
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          # limits:
+          #   memory: "128Mi"
+          #   cpu: "500m"
