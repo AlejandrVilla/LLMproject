@@ -30,7 +30,7 @@ activities_chat_prompt = ChatPromptTemplate.from_messages(
 app = Flask(__name__)
 
 # Extract activities
-@app.route('/extract_places', methods=["POST"])
+@app.route('/extract-places', methods=["POST"])
 def extract_places():
     content_type = request.headers.get('Content-type')
     if (content_type == "application/json"):

@@ -38,7 +38,7 @@ USER appuser
 COPY . .
 
 # Expose the port that the application listens on.
-# EXPOSE 5002
+EXPOSE 5002
 
 # Run the application.
 CMD python3 app.py
