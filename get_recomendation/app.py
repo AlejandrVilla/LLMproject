@@ -46,8 +46,8 @@ recomendation_chat_prompt = ChatPromptTemplate.from_messages(
 
 # get from summary reviews microservice
 def get_summary_reviews(all_places_reviews):
-    # summary_reviews_url = "http://summary_reviews:5003/summary_reviews"
-    summary_reviews_url = "http://127.0.0.1:5003/summary_reviews"
+    summary_reviews_url = "http://summary-reviews:5003/summary-reviews"
+    # summary_reviews_url = "http://127.0.0.1:5003/summary_reviews"
     all_places_reviews = {"all_places_reviews": all_places_reviews}
     headers = {"Content-type": "application/json"}
     response = requests.post(summary_reviews_url, headers=headers, data=json.dumps(all_places_reviews))
@@ -60,8 +60,8 @@ def get_summary_reviews(all_places_reviews):
     return 1, reviews_summary
 
 def get_filter_prediction(activities):
-    # filter_url = "http://filter:5004/filter"
-    filter_url = "http://127.0.0.1:5004/filter"
+    filter_url = "http://filter:5004/filter"
+    # filter_url = "http://127.0.0.1:5004/filter"
     text_dict = {
         "text": activities
     }
@@ -78,8 +78,8 @@ def get_filter_prediction(activities):
     return 1, prediction
 
 def get_extract_places(activities, language):
-    # places_url = "http://extract_places:5002/extract_places"
-    places_url = "http://127.0.0.1:5002/extract_places"
+    places_url = "http://extract-places:5002/extract-places"
+    # places_url = "http://127.0.0.1:5002/extract_places"
     activities_dict = {
         "activities": activities,
         "language": language
@@ -108,7 +108,7 @@ def get_response(order_by, places_info, reviews_summary, temperature: float = 0.
     return response
 
 # Microservice route
-@app.route('/get_recomendation', methods=['POST'])
+@app.route('/get-recomendation', methods=['POST'])
 def get_recomendation():
     content_type = request.headers.get('Content-type')
     if (content_type != "application/json"):
@@ -181,12 +181,12 @@ def get_recomendation():
         all_places_reviews[query_place] = places_reviews
 
     # Save data
-    json_object2 = json.dumps(all_places_info, indent=4)
-    with open("all-places-50-m.json", "w") as outfile:
-        outfile.write(json_object2)
-    json_object2 = json.dumps(all_places_reviews, indent=4)
-    with open("all-reviews-50-m.json", "w") as outfile:
-        outfile.write(json_object2)
+    # json_object2 = json.dumps(all_places_info, indent=4)
+    # with open("all-places-50-m.json", "w") as outfile:
+    #     outfile.write(json_object2)
+    # json_object2 = json.dumps(all_places_reviews, indent=4)
+    # with open("all-reviews-50-m.json", "w") as outfile:
+    #     outfile.write(json_object2)
         
     # Get summary reviews from microservice
     # all_places_reviews = ""
