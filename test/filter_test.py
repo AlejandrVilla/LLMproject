@@ -1,11 +1,10 @@
 import requests
 import json
 
-# text_url = "http://127.0.0.1:5004/filter"
-text_url = "https://staging.d2z3gii7z44mha.amplifyapp.com:5004/filter"
+text_url = "http://127.0.0.1:5004/filter"
 text = "They are playing with his friends"
-text = "bitches much twitter"
 text = "Play in a park with my children"
+text = "bitches much twitter"
 
 text_dict = {
     "text": text
