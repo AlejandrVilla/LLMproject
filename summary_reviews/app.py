@@ -24,7 +24,7 @@ summary_chat_prompt = ChatPromptTemplate.from_messages(
 app = Flask(__name__)
 
 # Summary of all reviews
-@app.route('/summary_reviews', methods=["POST"])
+@app.route('/summary-reviews', methods=["POST"])
 def summary_reviews():
     content_type = request.headers.get('Content-type')
     if (content_type == "application/json"):
