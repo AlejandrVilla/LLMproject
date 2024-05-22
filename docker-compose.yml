@@ -1,20 +1,27 @@
 services:
-  get_recomendation:
-    # image: docker.io/avherrera/get_recomendation_ms:v1.1
+  frontend:
+    build: ./frontend
+    # image: docker.io/avherrera/frontend_ms:v1.1.1
+    ports:
+      - "8501:8501"
+    networks:
+      - backend
+  get-recomendation:
+    # image: docker.io/avherrera/getrecomendation_ms:v1.1
     build: ./get_recomendation
     ports:
       - "5001:5001"
     networks:
       - backend
-  extract_places:
-    # image: docker.io/avherrera/extract_places_ms:v1.1
+  extract-places:
+    # image: docker.io/avherrera/extractplaces_ms:v1.1
     build: ./extract_places
     ports:
       - "5002:5002"
     networks:
       - backend
-  summary_reviews:
-    # image: docker.io/avherrera/summary_reviews_ms:v1.1
+  summary-reviews:
+    # image: docker.io/avherrera/summaryreviews_ms:v1.1
     build: ./summary_reviews
     ports:
       - "5003:5003"
