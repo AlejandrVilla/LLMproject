@@ -5,10 +5,10 @@ metadata:
 spec:
   selector:
     app: frontend
-  type: LoadBalancer
+  type: ClusterIP
   ports:
   - name: http
-    port: 8501
-    targetPort: 8501 # container
+    port: 3000
+    targetPort: 3000 # container
     # nodePort: 30030
     protocol: TCP

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: extract-places
+  name: streamlit-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: extract-places
+      app: streamlit-frontend
   template:
     metadata:
       labels:
-        app: extract-places
+        app: streamlit-frontend
     spec:
       containers:
-      - name: extract-places
-        image: avherrera/extractplaces_ms:v1.1.2
+      - name: streamlit-frontend
+        image: avherrera/frontend_ms:v1.1.2
         ports:
-        - containerPort: 5002
+        - containerPort: 8501
         resources:
           requests:
             memory: "64Mi"
