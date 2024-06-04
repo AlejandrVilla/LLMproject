@@ -2,6 +2,8 @@ myenv
 __pycache__
 *.json
 !reviews_test.json
+!package-lock.json
+!package.json
 *.txt
 !requirements.txt
 app_monolitic.py
