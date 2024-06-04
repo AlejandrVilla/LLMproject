@@ -4,6 +4,7 @@ from langchain_core.prompts.loading import load_prompt_from_config
 from langchain_core.prompts import ChatPromptTemplate
 
 places_url = "http://localhost:5002/extract-places"
+places_url = "https://www.guideplanner.pro/extract-places"
 activities = "ir a comer ceviche y luego al parque a pasear"
 # activities = "Go to the cinema and then play with my kids in the a park and go to the coffee"
 language = "English"
