@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 load_dotenv('./env.txt')
 from flask import Flask, request, json, jsonify
+from flask_cors import CORS, cross_origin
 import requests
 from langchain.prompts import (
     PromptTemplate,
@@ -28,6 +29,8 @@ import json
 from pprint import pprint
 
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 # recomendation templates
 recomendation_system_message = "You are a helpful assistant. You will receive some places with extra information: distances and times to get, ratings and comments."
@@ -109,6 +112,7 @@ def get_response(order_by, places_info, reviews_summary, temperature: float = 0.
 
 # Microservice route
 @app.route('/get-recomendation', methods=['POST'])
+@cross_origin() # allow all origins all methods.
 def get_recomendation():
     content_type = request.headers.get('Content-type')
     if (content_type != "application/json"):
@@ -123,21 +127,21 @@ def get_recomendation():
     data = request.json
     activities = data.get('activities')
     # Extract information from url
-    error, prediction = get_filter_prediction(activities=activities)
-    if error == 0:
-        # Format data
-        res_dic = {"content": prediction}
-        # print(res_dic)
-        response = jsonify(res_dic)
-        response.status_code = 200
-        return response
+    # error, prediction = get_filter_prediction(activities=activities)
+    # if error == 0:
+    #     # Format data
+    #     res_dic = {"content": prediction}
+    #     # print(res_dic)
+    #     response = jsonify(res_dic)
+    #     response.status_code = 200
+    #     return response
 
-    if prediction != 2:
-        content = "That is not a good prompt"
-        res_dict = {"content": content}
-        response = jsonify(res_dict)
-        response.status_code = 200
-        return response
+    # if prediction != 2:
+    #     content = "That is not a good prompt"
+    #     res_dict = {"content": content}
+    #     response = jsonify(res_dict)
+    #     response.status_code = 200
+    #     return response
 
     reference_place = data.get('reference_place')
     order_by = data.get('order_by')
@@ -158,21 +162,23 @@ def get_recomendation():
         return response
 
     # Using Google maps
-    geocode = get_geocode(reference_place)
-    coord = get_coord(geocode)
+    reference_place_geocode = get_geocode(reference_place)
+    reference_place_coord = get_coord(reference_place_geocode)
+    origin_geocode = get_geocode(origin)
+    origin_coord = get_coord(origin_geocode)
     all_places_info = {}
     all_places_reviews = {}
 
     for query_place in places_type:
         nearby_places, place_names, place_ids = get_places(
             query_place=query_place,
-            coord=coord,
+            coord=reference_place_coord,
             radius=radius,
             language=language
         )
 
         places_info, places_reviews = get_place_info(
-            origin=origin,
+            origin=origin_coord,
             place_names=place_names,
             place_ids=place_ids,
             mode=mode
@@ -203,6 +209,7 @@ def get_recomendation():
         return response
 
     # Get LLM response
+    # reviews_summary = ""
     res = get_response(
         order_by=order_by,
         places_info=all_places_info,
@@ -213,7 +220,7 @@ def get_recomendation():
     # Format data
     res_dict = {"content": res.content}
     
-    # print(res_dic)
+    print(res_dict)
     response = jsonify(res_dict)
     response.status_code = 200
 
