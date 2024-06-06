@@ -5,3 +5,6 @@ langchain_openai
 googlemaps
 streamlit
 python-dotenv
+flask
+flask-cors
+requests

@@ -1,0 +1,143 @@
+*{
+  box-sizing: border-box;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  height: 100vh;
+  align-items: center;
+  background-color: #1a1a2e;
+  color: #ffffff;
+}
+
+.sidebar {
+  height: 100%;
+  padding: 20px;
+  background-color: #162447;
+  border-right: 1px solid #1f4068;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar h2 {
+  color: white;
+}
+
+.form {
+  border: 1px solid black;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.form-group {
+  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.form-group label {
+  width: 100%;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  background-color: #1a1a2e;
+  border: 1px solid #1f4068;
+  border-radius: 5px;
+  color: #ffffff;
+}
+
+.form-group textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  background-color: #1a1a2e;
+  border: 1px solid #1f4068;
+  border-radius: 5px;
+  color: #ffffff;
+}
+
+.div_button{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.div_button button{
+  width: 50%;
+  padding: 10px;
+  background-color: #e43f5a;
+  border: none;
+  border-radius: 5px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #ff2e63;
+}
+
+.answer{
+  height: auto;
+  padding: 30px;
+  display: grid;
+  grid-template-rows: auto;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a2e;
+}
+
+.model_answer{
+  width: auto;
+  height: auto;
+  padding: 20px;
+  display: grid;
+  grid-template-rows: auto auto;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.model_answer h1 {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.results{
+  width: 100%;
+  height: auto;
+  /* Habilita el scroll vertical */
+  overflow-y: auto; 
+}
+
+.results p {
+  max-height: 500px;
+  /* text-align: center; */
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 40px;
+  margin-right: 40px;
+  /* Ajusta las palabras largas */
+  word-wrap: break-word; 
+  /* Ajusta las palabras largas */
+  /* overflow-wrap: break-word;  */
+  /* Mantiene los espacios en blanco */
+  white-space: pre-wrap; 
+}

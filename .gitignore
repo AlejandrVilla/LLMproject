@@ -1,4 +1,36 @@
 myenv
 __pycache__
 *.json
-env.txt
+!reviews_test.json
+!package-lock.json
+!package.json
+*.txt
+!requirements.txt
+app_monolitic.py
+langchain_utils.py
+.git-message-template
+*.zip
+filter/distilbert-filter
+frontend_tmp
+
+# dependencies
+# /node_modules
+# /.pnp
+# .pnp.js
+
+# # testing
+# /coverage
+
+# # production
+# /build
+
+# # misc
+# .DS_Store
+# .env.local
+# .env.development.local
+# .env.test.local
+# .env.production.local
+
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*

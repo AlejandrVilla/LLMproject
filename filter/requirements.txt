@@ -1,0 +1,6 @@
+tf-keras
+transformers
+langchain
+numpy
+tensorflow
+flask

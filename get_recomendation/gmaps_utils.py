@@ -18,10 +18,10 @@ def get_coord(geocode):
 ########### extract places
 def get_places(query_place, coord, radius: int = 25, language: str="spanish"):
     # with places
-    # places = gmaps.places(query=query_place, location=coord, radius=radius, open_now=True, language=language)
+    # places = gmaps.places(query=query_place, location=coord, radius=radius, open_now=False, language=language)
 
     # with places nearby
-    places = gmaps.places_nearby(keyword=query_place, location=coord, radius=radius, open_now=True, language=language)
+    places = gmaps.places_nearby(keyword=query_place, location=coord, radius=radius, open_now=False, language=language)
 
     nearby_places = []
     place_names = []
@@ -47,7 +47,7 @@ def get_place_info(origin, place_names, place_ids, mode: str = "walking"):
     places_info = []
     places_reviews = []
 
-    for i in range(min(len(place_names),5)):
+    for i in range(min(len(place_names),1)):
         place_info = {}
         distance, duration = get_directions(origin, place_ids[i], mode=mode)
         place = gmaps.place(place_id=place_ids[i])

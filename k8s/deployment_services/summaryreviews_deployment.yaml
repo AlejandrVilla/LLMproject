@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: summary-reviews
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: summary-reviews
+  template:
+    metadata:
+      labels:
+        app: summary-reviews
+    spec:
+      containers:
+      - name: summary-reviews
+        image: avherrera/summaryreviews_ms:v1.1.2
+        ports:
+        - containerPort: 5003
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          # limits:
+          #   memory: "128Mi"
+          #   cpu: "500m"

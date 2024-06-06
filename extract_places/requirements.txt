@@ -1,0 +1,7 @@
+openai
+langchain
+langchain_core
+langchain_openai
+python-dotenv
+flask
+requests
