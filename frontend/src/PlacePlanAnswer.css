@@ -1,0 +1,30 @@
+.place-answer-div{
+    display: flex;
+    margin: 5px;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    border: 1px solid wheat;
+    border-radius: 5px;
+}
+
+.place-answer-name{
+    text-align: center;
+    width: 170px;
+}
+
+.place-answer-div a{
+    color: #80c1ef;
+    width: 100px;
+    text-align: center; 
+}
+
+@media (max-width: 800px){
+    .place-answer-name{
+        width: 100px;
+    }
+    .place-answer-div a{
+        width: 100px;
+    }
+}

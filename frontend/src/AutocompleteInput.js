@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { Autocomplete } from '@react-google-maps/api';
 
+// Autocomplete component
 const AutocompleteInput = ({ placeholder, onPlaceChanged }) => {
   const [autocomplete, setAutocomplete] = useState(null);
   const inputRef = useRef(null);
 
+  // Load placeholder
   const onLoad = (autocompleteInstance) => {
     setAutocomplete(autocompleteInstance);
   };
@@ -25,6 +27,7 @@ const AutocompleteInput = ({ placeholder, onPlaceChanged }) => {
       onPlaceChanged={onPlaceChangedHandler}
     >
       <input
+        className='autocomplete-input'
         ref={inputRef}
         type="text"
         placeholder={placeholder}
@@ -34,4 +37,4 @@ const AutocompleteInput = ({ placeholder, onPlaceChanged }) => {
   );
 };
 
-export default AutocompleteInput;
+export {AutocompleteInput};
