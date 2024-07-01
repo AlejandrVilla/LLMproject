@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: summary-reviews
-        image: avherrera/summaryreviews_ms:v1.1.2
+        image: avherrera/summaryreviews_ms:v1.1.4
         ports:
         - containerPort: 5003
         resources:

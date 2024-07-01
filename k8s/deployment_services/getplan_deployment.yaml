@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: extract-places
+  name: get-plan
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: extract-places
+      app: get-plan
   template:
     metadata:
       labels:
-        app: extract-places
+        app: get-plan
     spec:
       containers:
-      - name: extract-places
-        image: avherrera/extractplaces_ms:v1.1.4
+      - name: get-plan
+        image: avherrera/getplan_ms:v0.0.2
         ports:
-        - containerPort: 5002
+        - containerPort: 5005
         resources:
           requests:
             memory: "64Mi"

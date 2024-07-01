@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: avherrera/frontend_ms:v2.1.4
+        image: avherrera/frontend_ms:v2.2.2
         ports:
         - containerPort: 3000
         resources:

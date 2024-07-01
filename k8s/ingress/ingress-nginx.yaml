@@ -34,13 +34,13 @@ spec:
     - host: guideplanner.pro
     - http:
         paths:
-          - path: /frontend
-            pathType: Prefix
-            backend:
-              service:
-                name: streamlit-frontend
-                port:
-                  number: 8501
+          # - path: /frontend
+          #   pathType: Prefix
+          #   backend:
+          #     service:
+          #       name: streamlit-frontend
+          #       port:
+          #         number: 8501
           - path: /
             pathType: Prefix
             backend:
@@ -76,6 +76,13 @@ spec:
                 name: filter
                 port:
                   number: 5004
+          - path: /get-plan
+            pathType: Prefix
+            backend:
+              service:
+                name: get-plan
+                port:
+                  number: 5005
   tls:
     - hosts:
         - guideplanner.pro
