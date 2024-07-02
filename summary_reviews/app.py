@@ -11,8 +11,8 @@ from langchain_core.messages import (
 from langchain_openai import ChatOpenAI
 
 # summary reviews templates
-summary_system_message = "You will receive a list of place reviews in a json format, generate a summary for each place in the same format. Put in your answer only the summary"
-summary_human_template = "{all_places_reviews}"
+summary_system_message = "You will receive a list of reviews, ignore bad reviews, generate a summary of all reviews."
+summary_human_template = "{place_reviews}"
 
 summary_chat_prompt = ChatPromptTemplate.from_messages(
     [
@@ -29,13 +29,13 @@ def summary_reviews():
     content_type = request.headers.get('Content-type')
     if (content_type == "application/json"):
         data = request.json
-        # all_places_reviews -> dict
-        all_places_reviews = data.get('all_places_reviews')
+        # place_reviews -> dict
+        place_reviews = data.get('place_reviews')
         
         chat_openai = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature = 0.7)
         # summary reviews
         reviews_messages = summary_chat_prompt.format(
-            all_places_reviews=all_places_reviews
+            place_reviews=place_reviews
         )
         reviews_summary = chat_openai.invoke(reviews_messages)
         print("summary reviews: ",reviews_summary.content)

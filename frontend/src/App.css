@@ -1,50 +1,60 @@
+:root {
+  --form-control-color: rebeccapurple;
+}
+
 *{
   box-sizing: border-box;
 }
 
 .app {
   display: grid;
-  grid-template-columns: 30% 70%;
-  height: 100vh;
+  grid-template-columns: 30% 55%;
+  height: auto;
+  width: 80%;
   align-items: center;
-  background-color: #1a1a2e;
+  justify-content: space-evenly;
+
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: #22282f91;
   color: #ffffff;
+  overflow: auto;
+  box-shadow: 3px 3px 20px 10px #1f282f91;
 }
 
 .sidebar {
   height: 100%;
   padding: 20px;
-  background-color: #162447;
-  border-right: 1px solid #1f4068;
+  background-color: #2b2e3d;
+  /* border: 5px solid #2b2e3d; */
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: 
+  linear-gradient(#111a25, #222) padding-box, 
 }
 
 .sidebar h2 {
+  text-align: center;
   color: white;
 }
 
 .form {
-  border: 1px solid black;
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 10px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .form-group {
   width: 100%;
   padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
 }
 
 .form-group label {
@@ -72,11 +82,19 @@
   color: #ffffff;
 }
 
+.options-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .div_button{
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .div_button button{
@@ -88,6 +106,7 @@
   color: #ffffff;
   cursor: pointer;
   font-size: 16px;
+  margin: 10px;
 }
 
 button:hover {
@@ -95,13 +114,13 @@ button:hover {
 }
 
 .answer{
-  height: auto;
+  height: 100%;
   padding: 30px;
   display: grid;
   grid-template-rows: auto;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a2e;
+  border-radius: 5px;
 }
 
 .model_answer{
@@ -120,24 +139,129 @@ button:hover {
   margin-bottom: 10px;
 }
 
+.loading-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.loading-div p {
+  font-size: 30px;
+  text-align: center;
+  margin: 0;
+  padding: 20px 20px 27px 20px;
+}
+
 .results{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: auto;
   /* Habilita el scroll vertical */
   overflow-y: auto; 
+  background-color: #2f2f2f38;
+  border-radius: 5px;
 }
 
-.results p {
-  max-height: 500px;
-  /* text-align: center; */
-  margin-top: 20px;
-  margin-bottom: 20px;
-  margin-left: 40px;
-  margin-right: 40px;
-  /* Ajusta las palabras largas */
-  word-wrap: break-word; 
-  /* Ajusta las palabras largas */
-  /* overflow-wrap: break-word;  */
-  /* Mantiene los espacios en blanco */
-  white-space: pre-wrap; 
+.icon-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: end;
+}
+
+.Back-icon-div{
+  cursor: pointer;
+  height: auto;
+  width: auto;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.Next-icon-div{
+  cursor: pointer;
+  height: auto;
+  width: auto;
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.Icon-svg{
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  background-color: white;
+}
+
+@media (max-width: 800px){
+  #root .app{
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar{
+    flex-direction: column;
+    padding: 0;
+  }
+  .sidebar h2{
+    font-size: 16px;
+    width: auto;
+  }
+  .form{
+    flex-direction: row;
+    padding: 0;
+    font-size: 10px;
+  }
+  .form-group{
+    text-align: center;
+    width: 100px;
+    height: auto;
+    padding-top: 5px;
+  }
+  .form-group label{
+    margin-bottom: 0;
+  }
+  .form-group input{
+    width: 100px;
+    font-size: 10px;
+    margin-bottom: 10px;
+  }
+  .form-group textarea{
+    width: 100px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+  .options-div{
+    width: auto;
+    padding: 0;
+  }
+  .mode-div, .type-plan-div{
+    justify-content: center;
+  }
+  .div_button{
+    width: 50px;
+    padding: 0;
+  }
+  .div_button button{
+    padding: 0;
+    margin: 0;
+    width: 50px;
+    font-size: 10px;
+  }
+  .answer{
+    font-size: 12px;
+  }
+  .model_answer{
+    padding: 0;
+  }
+  .loading-div p{
+    font-size: 20px;
+  }
 }
