@@ -1,46 +1,34 @@
-# apiVersion: cert-manager.io/v1
-# kind: ClusterIssuer
-# metadata:
-#   name: letsencrypt-staging
-#   namespace: cert-manager
-# spec:
-#   acme:
-#     # The ACME server URL
-#     server: https://acme-v02.api.letsencrypt.org/directory
-#     # Email address used for ACME registration
-#     email: aleviherrera@gmail.com
-#     # Name of a secret used to store the ACME account private key
-#     privateKeySecretRef:
-#       name: letsencrypt-staging
-#     # Enable the HTTP-01 challenge provider
-#     solvers:
-#       - http01:
-#           ingress:
-#             class: nginx
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: aleviherrera@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
 
-# ---
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: guideplanner
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     # nginx.ingress.kubernetes.io/rewrite-target: /   # redirigir trafico
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/tls-acme: "true"
 spec:
   ingressClassName: "nginx"
   rules:
-    - host: guideplanner.pro
-    - http:
+    - host: www.guideplanner.pro
+      http:
         paths:
-          # - path: /frontend
-          #   pathType: Prefix
-          #   backend:
-          #     service:
-          #       name: streamlit-frontend
-          #       port:
-          #         number: 8501
           - path: /
             pathType: Prefix
             backend:
@@ -85,5 +73,5 @@ spec:
                   number: 5005
   tls:
     - hosts:
-        - guideplanner.pro
-      secretName: guideplanner-tls-manual
+        - www.guideplanner.pro
+      secretName: ssl-cert-prod
