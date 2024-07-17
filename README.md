@@ -68,4 +68,3 @@ spec:
 cd ingress
 kubectl apply -f ingress-nginx.yaml
 ```
-### Delete the secret.yaml file an set your secret
