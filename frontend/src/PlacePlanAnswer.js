@@ -8,11 +8,11 @@ function PlacePlanAnswer({place}){
         <div className="place-answer-div">
             <p className="place-answer-name">{place.name}</p>
             <a href={place.maps_url} target="_blank" rel="noreferrer noopener">Maps link</a>
-            {place.opened ?(
+            {/* {place.opened ?(
                 <p className="place-answer-opened">It's opened now!</p>
             ) : (
                 <p className="place-answer-opened">It's not opened now</p>
-            )}
+            )} */}
             { place.phone_number ? (
                 <p className="place-answer-phone">Contact: {place.phone_number}</p>
             ) : (

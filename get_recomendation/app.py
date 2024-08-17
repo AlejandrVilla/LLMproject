@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv('./env.txt')
 from flask import Flask, request, json, jsonify
 from flask_cors import CORS, cross_origin
+from flask_mysqldb import MySQL
 import requests
 from gmaps_utils import (
     get_places, 
@@ -17,6 +18,11 @@ from pprint import pprint
 app = Flask(__name__)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'alejandro'
+app.config['MYSQL_DB'] = 'recomendation_app_db'
+mysql = MySQL(app)
 
 def get_filter_prediction(activities):
     filter_url = "http://filter:5004/filter"
@@ -37,8 +43,8 @@ def get_filter_prediction(activities):
     return 1, prediction
 
 def get_extract_places(activities, language):
-    places_url = "http://extract-places:5002/extract-places"
-    # places_url = "http://127.0.0.1:5002/extract-places"
+    # places_url = "http://extract-places:5002/extract-places"
+    places_url = "http://127.0.0.1:5002/extract-places"
     activities_dict = {
         "activities": activities,
         "language": language
@@ -54,8 +60,8 @@ def get_extract_places(activities, language):
     return 1, places_type
 
 def post_group_places(group_places, places_type):
-    places_url = "http://get-plan:5005/post-plan"
-    # places_url = "http://127.0.0.1:5005/post-plan"
+    # places_url = "http://get-plan:5005/post-plan"
+    places_url = "http://127.0.0.1:5005/post-plan"
     group_places_dict = {
         "group_places": group_places,
         "places_type": places_type
@@ -139,12 +145,54 @@ def get_recomendation():
             language=language
         )
         places_info = []
-        # max 4 elements
+        # max 3 elements
         for i in range(min(len(place_names), 3)):
-            place_info = get_place_summary(
-                place_name=place_names[i],
-                place_id=place_ids[i],
-            )
+            # Se puede extraer de la BD si ya existe
+            cur = mysql.connection.cursor()
+            cur.execute('''SELECT * FROM place WHERE place_id = %s''', (place_ids[i],))
+            # tuple response
+            data = cur.fetchall()
+            cur.close()
+            # read from database
+            if len(data) != 0:
+                data = list(data[0])
+                place_id = place_ids[i]
+                place_name = data[1]
+                rating = data[2]
+                phone_number = data[3]
+                maps_url = data[4]
+                place_info = {
+                    "name": place_name,
+                    "place_id": place_id,
+                    "rating": rating,
+                    "maps_url": maps_url,
+                    "phone_number": phone_number,
+                }
+                print("fetched from database")
+            # use google maps api
+            else:
+                place_info = get_place_summary(
+                    place_name=place_names[i],
+                    place_id=place_ids[i],
+                )
+                # Insert into data base
+                cur = mysql.connection.cursor()
+                cur.execute(
+                    '''
+                    INSERT INTO place (place_id, placename, rating, phone, maps_url)
+                    VALUES(%s, %s, %s, %s, %s)
+                    ''', 
+                    (
+                        place_info['place_id'],
+                        place_info['name'],
+                        place_info['rating'],
+                        place_info['phone_number'],
+                        place_info['maps_url']
+                    )
+                )
+                mysql.connection.commit()
+                cur.close()
+                print(f"insert place: {place_info['name']}")
             places_info.append(place_info)
         all_places_info[query_place] = places_info
         if(len(places_info) > max_places):
@@ -156,7 +204,7 @@ def get_recomendation():
         outfile.write(json_object)
 
     group_places = []
-    # max 4 groups recomendations
+    # max 3 groups recomendations
     for i in range(min(3, max_places)):
         places = []
         # for each place extract one place randomly

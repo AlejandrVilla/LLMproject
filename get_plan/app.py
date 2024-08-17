@@ -50,8 +50,8 @@ recomendation_chat_prompt = ChatPromptTemplate.from_messages(
 
 # get from summary reviews microservice
 def get_summary_reviews(place_reviews):
-    summary_reviews_url = "http://summary-reviews:5003/summary-reviews"
-    # summary_reviews_url = "http://127.0.0.1:5003/summary-reviews"
+    # summary_reviews_url = "http://summary-reviews:5003/summary-reviews"
+    summary_reviews_url = "http://127.0.0.1:5003/summary-reviews"
     place_reviews = {"place_reviews": place_reviews}
     headers = {"Content-type": "application/json"}
     response = requests.post(summary_reviews_url, headers=headers, data=json.dumps(place_reviews))
@@ -94,8 +94,8 @@ def get_response(places_info, plan_type, temperature: float = 0.7):
     response = chat_openai.invoke(recomendations_messages)
     return response
 
-global group_places
-global places_type
+# global group_places
+# global places_type
 
 @app.route('/post-plan', methods=['POST'])
 @cross_origin() # allow all origins all methods.
@@ -196,7 +196,7 @@ def get_plan():
             rating = place["rating"]
             maps_url = place["maps_url"]
             phone_number = place["phone_number"]
-            opened = place["opened"]
+            # opened = place["opened"]
             type = place["type"]
 
             place_info, place_reviews = get_place_info(
@@ -225,7 +225,7 @@ def get_plan():
             place_tmp = place_info.copy()
             place_tmp["place_id"] = place_id
             place_tmp["phone_number"] = phone_number
-            place_tmp["opened"] = opened
+            # place_tmp["opened"] = opened
             place_tmp["maps_url"] = maps_url
             place_tmp["type"] = type
             all_places_info2.append(place_tmp)

@@ -12,7 +12,7 @@ import BeatLoader from "react-spinners/BeatLoader";
 import './App.css';
 
 const libraries = ['places'];
-const apiKey  = "AIzaSyCSRyW3hVI6HV-6xgkwqgSJMPWgMKELvYk"
+const apiKey  = "AIzaSyBrdsAtDi9M11op_ge4jRfLqHxZ_hMr32g"
 let recommendations_tmp;
 let planAnswer_tmp;
 
@@ -58,8 +58,8 @@ function App() {
   const handleGetPlan = async () => {
     planAnswer_tmp = '';
     try{
-      const response = await axios.post('https://www.guideplanner.pro/get-plan',{
-      // const response = await axios.post('http://127.0.0.1:5005/get-plan',{
+      // const response = await axios.post('https://www.guideplanner.pro/get-plan',{
+      const response = await axios.post('http://127.0.0.1:5005/get-plan',{
         ind: selectPlan,
         plan_type: selectedRadio,
         origin: startPoint,
@@ -103,8 +103,8 @@ function App() {
     e.preventDefault();
     setLoading(true);
     try {
-        const response = await axios.post('https://www.guideplanner.pro/get-recomendation', {
-        // const response = await axios.post('http://127.0.0.1:5001/get-recomendation', {
+        // const response = await axios.post('https://www.guideplanner.pro/get-recomendation', {
+        const response = await axios.post('http://127.0.0.1:5001/get-recomendation', {
             activities: activity,
             origin: startPoint,
             radius: radius,

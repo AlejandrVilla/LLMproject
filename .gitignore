@@ -12,7 +12,7 @@ langchain_utils.py
 *.zip
 filter/distilbert-filter
 frontend_tmp
-
+db
 # dependencies
 # /node_modules
 # /.pnp
