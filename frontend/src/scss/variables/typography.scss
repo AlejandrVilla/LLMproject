@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Serif:ital,opsz,wght@0,8..144,100..900;1,8..144,100..900&display=swap');
+
+$font-primary: "Roboto Serif", serif;
+$font-heading1: 32px;
+$font-heading2: 24px;
+$font-heading3: 20px;
+$font-text: 16px;
+
+$font-heading1-w: 900;
+$font-heading2-w: 700;
+$font-heading3-w: 600;
+$font-text-w: 400;
+
+// <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 900
+
+// .roboto-serif-<uniquifier> {
+//     font-family: "Roboto Serif", serif;
+//     font-optical-sizing: auto;
+//     font-weight: <weight>;
+//     font-style: normal;
+//     font-variation-settings:
+//       "wdth" 100,
+//       "GRAD" 0;
+//   }
+
+h1,h2,h3,h4,p,label,li{
+    margin: 0;
+}
+
+h1{
+    font-size: $font-heading1;
+    font-weight: $font-heading1-w;
+    color: $color-dblue-1;
+    font-family: $font-primary;
+}
+
+h2{
+    font-size: $font-heading2;
+    font-weight: $font-heading2-w;
+    color: $color-dblue-1;
+    font-family: $font-primary;
+}
+
+h3, h4{
+    font-size: $font-heading3;
+    font-weight: $font-heading3-w;
+    color: $color-eblue-1;
+    font-family: $font-primary;
+}
+
+p, a, label, li{
+    font-size: $font-text;
+    font-weight: $font-text-w;
+    color: $color-eblue-1;
+    font-family: $font-primary;
+}

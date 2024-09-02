@@ -1,11 +1,11 @@
 import React from "react";
 import {PlaceItem} from "./PlaceItem";
-import "./PlaceList.css";
+import "./PlaceList.scss";
 
 // Component for a list of places
 const PlaceList = ({places, data_key, onSelect}) => {
     // When a plan is selected
-    const onSelectPlan = (e) => {
+    const onSelectPlan = () => {
         // console.log(data_key + 1)
         onSelect(data_key);
     }
@@ -13,7 +13,6 @@ const PlaceList = ({places, data_key, onSelect}) => {
     return(
         <div className="placelist-div">
             <div className="placelist-title">
-                {/* <p>Plan {data_key+1}</p> */}
                 <p className="title" onClick={onSelectPlan}>choose plan {data_key+1}</p>
             </div>
             {places.map(place => (    

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Options.css'
+import './Options.scss'
 
 const Options = ({ selectedRadio, onRadioChanged, selectedMeter, onMeterChanged, selectMode, onModeChanged }) => {
     const [selectedOption, setSelectedOption] = useState(selectedRadio);
@@ -27,7 +27,7 @@ const Options = ({ selectedRadio, onRadioChanged, selectedMeter, onMeterChanged,
     return (
         <>
             <div className='meters'>
-                <label>Radio in meters</label>
+                <label htmlFor='meter-range'>Radio in meters</label>
                 <input
                     className='meter-range'
                     type="range"
@@ -35,18 +35,19 @@ const Options = ({ selectedRadio, onRadioChanged, selectedMeter, onMeterChanged,
                     max="500"
                     value={meters}
                     onChange={handleMetersChange}
+                    id='meter-range'
                 /> {meters}
             </div>
             <div className='mode-div'>
-                <label>Mode</label>
+                <p>Mode</p>
                 <div className='mode-radio-div'>
                     <div>
                         <label className="form-control">
                             <input
                                 type="radio"
                                 name="mode"
-                                value="driving"
-                                checked={mode === "driving"}
+                                value="DRIVING"
+                                checked={mode === "DRIVING"}
                                 onChange={handleModeChange}
                             />
                             <div className="check"></div>
@@ -58,8 +59,8 @@ const Options = ({ selectedRadio, onRadioChanged, selectedMeter, onMeterChanged,
                             <input
                                 type="radio"
                                 name="mode"
-                                value="walking"
-                                checked={mode === "walking"}
+                                value="WALKING"
+                                checked={mode === "WALKING"}
                                 onChange={handleModeChange}
                             />
                             <div className="check"></div>
@@ -69,7 +70,7 @@ const Options = ({ selectedRadio, onRadioChanged, selectedMeter, onMeterChanged,
                 </div>
             </div>
             <div className='type-plan-div'>
-                <label>Plan</label>
+                <p>Plan</p>
                 <div className='plan-radio-div'>
                     <div>
                         <label className="form-control">

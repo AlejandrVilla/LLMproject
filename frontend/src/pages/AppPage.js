@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { LoadScript } from '@react-google-maps/api';
-import { AutocompleteInput } from './AutocompleteInput.js';
-import { Plan } from "./Plan.js"
-import { DefaultAnswer } from './DefaultAnswer.js';
-import { PlanAnswer } from './PlanAnswer.js';
-import { Options } from './Options.js'
-import { ReactComponent as BackSVG } from './icon/back2.svg'
-import { ReactComponent as NextSVG } from './icon/next.svg'
+import { AutocompleteInput } from '../modules/AutocompleteInput.js';
+import { Plan } from "../modules/Plan.js"
+import { DefaultAnswer } from '../modules/DefaultAnswer.js';
+import { PlanAnswer } from '../modules/PlanAnswer.js';
+import { Options } from '../modules/Options.js'
+import { ReactComponent as BackSVG } from '../icon/back2.svg'
+import { ReactComponent as NextSVG } from '../icon/next.svg'
 import BeatLoader from "react-spinners/BeatLoader";
-import './App.css';
+import './App.scss';
+import { Link } from 'react-router-dom';
 
-const libraries = ['places'];
-const apiKey  = "AIzaSyBrdsAtDi9M11op_ge4jRfLqHxZ_hMr32g"
+const GET_RECOMENDATION_URL = 'http://127.0.0.1:5006/get-recomendation/';
+// const GET_RECOMENDATION_URL = https://www.guideplanner.pro/get-recomendation';
+const GET_PLAN_URL = 'http://127.0.0.1:5006/get-plan/';
+// const GET_PLAN_URL = 'https://www.guideplanner.pro/get-plan';
 let recommendations_tmp;
 let planAnswer_tmp;
 
 function App() {
   // loading
   const [loading, setLoading] = useState(false)
-  
-  // plan values
-  const [selectPlan, setSelectPlan] = useState(null);
   
   // user info
   const [startPoint, setStartPoint] = useState('');
@@ -32,7 +31,7 @@ function App() {
   // options values
   const [selectedRadio, setSelectedRadio] = useState('Family');
   const [meters, setMeters] = useState(200);  // Default value
-  const [mode, setMode] = useState("driving");
+  const [mode, setMode] = useState("DRIVING");
 
   // hyperparameter
   const temperature = 0.7;
@@ -40,32 +39,28 @@ function App() {
   // const mode = "driving";
   const language = "spanish";
 
-  // selectPlan, setSelectPlan
-  const onSelectPlan = (planSetter) => (plan) => {
+  // When a plan is selected
+  const onSelectPlan = (plan) => {
     setLoading(true);
-    planSetter(plan);
+    console.log(plan);
+    handleGetPlan(plan);
   }
 
-  // useEffect to log selectedOption whenever it changes
-  useEffect(() => {
-    if(selectPlan != null){
-      console.log(selectPlan+1);
-      handleGetPlan();
-    }
-  }, [selectPlan]);
-
-  // console.log(startPoint)
-  const handleGetPlan = async () => {
+  const handleGetPlan = async (ind) => {
     planAnswer_tmp = '';
     try{
-      // const response = await axios.post('https://www.guideplanner.pro/get-plan',{
-      const response = await axios.post('http://127.0.0.1:5005/get-plan',{
-        ind: selectPlan,
-        plan_type: selectedRadio,
-        origin: startPoint,
-        mode: mode,
-        temperature: temperature
-      });
+      const response = await axios.post(
+        GET_PLAN_URL,
+        {
+          ind: ind,
+          plan_type: selectedRadio,
+          origin: startPoint,
+          mode: mode,
+          temperature: temperature
+        },{
+          withCredentials: true,
+        }
+      );
       const data = response.data;
       // console.log(data);  
       setPlanAnswer(data);
@@ -103,14 +98,18 @@ function App() {
     e.preventDefault();
     setLoading(true);
     try {
-        // const response = await axios.post('https://www.guideplanner.pro/get-recomendation', {
-        const response = await axios.post('http://127.0.0.1:5001/get-recomendation', {
+        const response = await axios.post(
+          GET_RECOMENDATION_URL, 
+          {
             activities: activity,
             origin: startPoint,
             radius: radius,
             language: language,
             temperature: temperature
-        });
+          },{
+            withCredentials: true
+          }
+        );
 
         const data = response.data;
         // console.log(data);
@@ -126,7 +125,7 @@ function App() {
   if (recommendations){
     final_plan = <Plan 
                 recommendations = {recommendations}
-                onSelect = {onSelectPlan(setSelectPlan)}
+                onSelect = {onSelectPlan}
               />
   }
   else if(planAnswer)
@@ -173,24 +172,28 @@ function App() {
 
   // Component
   return (
-    <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
+    <>
+      <div className='home-link-div'>
+        <Link to={'/'}>Home</Link>
+      </div>
       <div className="app">
         <div className="sidebar">
           <h2>Guide Planner</h2>
           <form onSubmit={handleSubmit} className='form'>
             <div>
               <div className="form-group">
-                <label>Start point</label>
+                <label htmlFor='start-place'>Start point</label>
                 <AutocompleteInput
                   placeholder="Enter a start point"
                   onPlaceChanged={handlePlaceChanged(setStartPoint)}
                 />
               </div>
               <div className="form-group">
-                <label>Enter your activity</label>
+                <label htmlFor="prompt">Enter your activity</label>
                 <textarea
                   value={activity}
                   onChange={(e) => setActivity(e.target.value)}
+                  id='prompt'
                   required
                 ></textarea>
               </div>
@@ -206,40 +209,40 @@ function App() {
               />
             </div>
             <div className='div_button'>
-              <button type="submit">Search</button>
+              <button className='search-prompt' type="submit">Search</button>
             </div>
           </form>
         </div>
-          <div className='answer'>
-            <div className='model_answer'>
-              {loading?(
-                <div className='loading-div'>
-                  <p>wait a moment</p>
-                  <BeatLoader color='#d63736' loading={loading}/>
-                </div>
-                ):(
-                <div className="results">
-                  <div className='icon-div'>
-                    <div 
-                      className='Back-icon-div'
-                      onClick={handleBack}
-                    >
-                      {back_icon}
-                    </div>
-                    <div className='Next-icon-div'
-                      onClick={handleNext}
-                    >
-                      {next_icon}
-                    </div>
+        <div className='answer'>
+          <div className='model_answer'>
+            {loading?(
+              <div className='loading-div'>
+                <p>wait a moment</p>
+                <BeatLoader color='#d63736' loading={loading}/>
+              </div>
+              ):(
+              <div className="results">
+                <div className='icon-div'>
+                  <div 
+                    className='Back-icon-div'
+                    onClick={handleBack}
+                  >
+                    {back_icon}
                   </div>
-                    {final_plan}
+                  <div className='Next-icon-div'
+                    onClick={handleNext}
+                  >
+                    {next_icon}
+                  </div>
                 </div>
-              )}
-            </div>
+                  {final_plan}
+              </div>
+            )}
           </div>
+        </div>
       </div>
-    </LoadScript>
+    </>
   );
 }
 
-export default App;
+export { App };

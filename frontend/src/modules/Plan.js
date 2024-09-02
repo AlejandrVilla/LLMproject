@@ -1,6 +1,6 @@
 import React from 'react';
-import {PlaceList} from "./PlaceList"
-import "./Plan.css"
+import {PlaceList} from "../components/PlaceList"
+import "./Plan.scss"
 
 // Component to show plans
 function Plan({recommendations, onSelect}){

@@ -1,5 +1,5 @@
 import React from "react";
-import './PlacePlanAnswer.css'
+import './PlacePlanAnswer.scss'
 
 // Component for a final plan
 function PlacePlanAnswer({place}){

@@ -1,5 +1,5 @@
 import React from "react";
-import "./PlaceItem.css"
+import "./PlaceItem.scss"
 
 // Component for a place
 function PlaceItem({place}){

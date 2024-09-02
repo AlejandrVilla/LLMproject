@@ -31,6 +31,7 @@ const AutocompleteInput = ({ placeholder, onPlaceChanged }) => {
         ref={inputRef}
         type="text"
         placeholder={placeholder}
+        id='start-place'
         required
       />
     </Autocomplete>

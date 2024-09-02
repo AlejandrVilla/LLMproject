@@ -8,7 +8,7 @@
 .map-link{
     padding: 0;
     margin: 10px;
-    color: #0690b6;
+    cursor: pointer;
 }
 
 .map-link h3{
@@ -16,11 +16,14 @@
     margin: 10px;
 }
 
+.map-link h3:hover{
+    color: #e43f5a;
+}
+
 .plan-answer{
     max-width: 800px;
-    max-height: 500px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    max-height: 250px;
+    margin: 20px;
     /* Ajusta las palabras largas */
     word-wrap: break-word; 
     /* Ajusta las palabras largas */
@@ -49,12 +52,16 @@
 .return-link{
     padding: 0;
     margin: 10px;
-    color: #0690b6;
+    cursor: pointer;
 }
 
 .return-link h3{
     padding: 0;
     margin: 10px;
+}
+
+.return-link h3:hover{
+    color: #e43f5a;
 }
 
 @media (max-width: 800px){
