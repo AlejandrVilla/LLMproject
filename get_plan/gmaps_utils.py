@@ -36,6 +36,7 @@ def get_places(query_place, coord, radius: int = 25, language: str="spanish"):
 
 ########### getting directions 
 def get_directions(origin, place_id, mode: str = "walking"):
+    mode = mode.lower()
     direction = gmaps.directions(origin=origin, destination=f"place_id:{place_id}", mode=mode)
 
     distance = direction[0]['legs'][0]['distance']['text']

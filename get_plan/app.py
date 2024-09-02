@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv('./env.txt')
 from flask import Flask, request, json, jsonify
 from flask_cors import CORS, cross_origin
+from flask_mysqldb import MySQL
 import requests
 from langchain.prompts import (
     PromptTemplate,
@@ -27,11 +28,19 @@ from langchain.chains import LLMChain, SimpleSequentialChain
 import os
 import json
 import random
+from uuid import uuid4
 from pprint import pprint
+
+sql_user = os.environ['MYSQL_USER']
+sql_pw = os.environ['MYSQL_PASSWORD']
 
 app = Flask(__name__)
 CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = sql_user
+app.config['MYSQL_PASSWORD'] = sql_pw
+app.config['MYSQL_DB'] = 'recomendation_app_db'
+mysql = MySQL(app)
 
 # recomendation templates
 recomendation_system_message = "You are a helpful assistant. You will receive some places with extra information: distances and times to get, ratings and comments."
@@ -63,6 +72,7 @@ def get_summary_reviews(place_reviews):
 
     return 1, reviews_summary
 
+# Connect to filter microservice
 def get_filter_prediction(activities):
     filter_url = "http://filter:5004/filter"
     # filter_url = "http://127.0.0.1:5004/filter"
@@ -81,7 +91,7 @@ def get_filter_prediction(activities):
     prediction = res["prediction"]
     return 1, prediction
 
-# get response
+# get response from LLM
 def get_response(places_info, plan_type, temperature: float = 0.7):
     # chat_openai = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature = temperature)
     chat_openai = ChatOpenAI(model="gpt-4o", temperature = temperature)
@@ -97,9 +107,11 @@ def get_response(places_info, plan_type, temperature: float = 0.7):
 # global group_places
 # global places_type
 
+# Get group places as plans from get recomendation microservice
 @app.route('/post-plan', methods=['POST'])
 @cross_origin() # allow all origins all methods.
 def post_plan():
+    global prompt
     global group_places
     global places_type
     content_type = request.headers.get('Content-type')
@@ -112,6 +124,7 @@ def post_plan():
         response.status_code = 404
         return response
     data = request.json
+    prompt = data.get('prompt')
     group_places = data.get('group_places')
     places_type = data.get('places_type')
 
@@ -151,8 +164,10 @@ def get_plan():
     origin = data.get('origin')
     mode = data.get('mode')
     temperature = data.get('temperature')
+    user_id = data.get("user_id")
 
     print("user data:")
+    print(f"user: {user_id}")
     print(f"origin: {origin}")
     print(f"mode: {mode}")
     print(f"plan_type: {plan_type}")
@@ -242,6 +257,31 @@ def get_plan():
         plan_type = plan_type,
         temperature = temperature
     )
+
+    # save in prompt table
+    prompt_id = uuid4().hex
+    cur = mysql.connection.cursor()
+    cur.execute(
+        '''
+        INSERT INTO prompt (prompt_id, prompt_text, user_id)
+        VALUES (%s, %s, %s)
+        ''',
+        (prompt_id, prompt, user_id)
+    )
+    cur.connection.commit()
+    print(f"prompt: {prompt_id} asked by user: {user_id} inserted in db")
+    # save in answer table
+    answer_id = uuid4().hex
+    cur.execute(
+        '''
+        INSERT INTO answer (answer_id, answer_text, prompt_id)
+        VALUES (%s, %s, %s)
+        ''',
+        (answer_id, res.content, prompt_id)
+    )
+    cur.connection.commit()
+    cur.close()
+    print(f"answer: {answer_id} for the user: {user_id} inserted in db")
 
     # Format data
     res_dict = {

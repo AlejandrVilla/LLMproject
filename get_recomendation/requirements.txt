@@ -3,3 +3,4 @@ python-dotenv
 flask
 flask-cors
 requests
+flask_mysqldb

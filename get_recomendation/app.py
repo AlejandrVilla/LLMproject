@@ -15,15 +15,18 @@ import json
 import random
 from pprint import pprint
 
+sql_user = os.environ['MYSQL_USER']
+sql_pw = os.environ['MYSQL_PASSWORD']
+
 app = Flask(__name__)
 CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'alejandro'
+app.config['MYSQL_USER'] = sql_user
+app.config['MYSQL_PASSWORD'] = sql_pw
 app.config['MYSQL_DB'] = 'recomendation_app_db'
 mysql = MySQL(app)
 
+# Connect to filter microservice
 def get_filter_prediction(activities):
     filter_url = "http://filter:5004/filter"
     # filter_url = "http://127.0.0.1:5004/filter"
@@ -42,6 +45,7 @@ def get_filter_prediction(activities):
     prediction = res["prediction"]
     return 1, prediction
 
+# Connect to extract place microservice
 def get_extract_places(activities, language):
     # places_url = "http://extract-places:5002/extract-places"
     places_url = "http://127.0.0.1:5002/extract-places"
@@ -59,15 +63,21 @@ def get_extract_places(activities, language):
     places_type = res["places_type"]
     return 1, places_type
 
-def post_group_places(group_places, places_type):
+# Connect to get plan microservice and send group places as plans
+def post_group_places(prompt, group_places, places_type):
     # places_url = "http://get-plan:5005/post-plan"
     places_url = "http://127.0.0.1:5005/post-plan"
     group_places_dict = {
+        "prompt": prompt,
         "group_places": group_places,
         "places_type": places_type
     }
     headers = {"Content-type": "application/json"}
-    response = requests.post(places_url, headers=headers, data=json.dumps(group_places_dict))
+    response = requests.post(
+        places_url, 
+        headers=headers, 
+        data=json.dumps(group_places_dict)
+    )
     if response.status_code != 200:
         res = "Error trying to connect post-plan method in get-plan microservice"
         return 0, res
@@ -76,7 +86,7 @@ def post_group_places(group_places, places_type):
     message = res["message"]
     return 1, message
 
-# Microservice route
+# Get group places as plans
 @app.route('/get-recomendation', methods=['POST'])
 @cross_origin() # allow all origins all methods.
 def get_recomendation():
@@ -113,8 +123,10 @@ def get_recomendation():
     radius = data.get('radius')
     language = data.get('language')
     temperature = data.get('temperature')
+    user_id = data.get('user_id')
 
     print("user data:")
+    print(f"user: {user_id}")
     print(f"activities: {activities}")
     print(f"origin: {origin}")
     print(f"radius: {radius}")
@@ -147,8 +159,8 @@ def get_recomendation():
         places_info = []
         # max 3 elements
         for i in range(min(len(place_names), 3)):
-            # Se puede extraer de la BD si ya existe
             cur = mysql.connection.cursor()
+            # Extract from DB if it exists
             cur.execute('''SELECT * FROM place WHERE place_id = %s''', (place_ids[i],))
             # tuple response
             data = cur.fetchall()
@@ -168,14 +180,14 @@ def get_recomendation():
                     "maps_url": maps_url,
                     "phone_number": phone_number,
                 }
-                print("fetched from database")
+                print(f"place: {place_ids[i]} fetched from database")
             # use google maps api
             else:
                 place_info = get_place_summary(
                     place_name=place_names[i],
                     place_id=place_ids[i],
                 )
-                # Insert into data base
+                # Insert into place table
                 cur = mysql.connection.cursor()
                 cur.execute(
                     '''
@@ -183,7 +195,7 @@ def get_recomendation():
                     VALUES(%s, %s, %s, %s, %s)
                     ''', 
                     (
-                        place_info['place_id'],
+                        place_ids[i],
                         place_info['name'],
                         place_info['rating'],
                         place_info['phone_number'],
@@ -192,7 +204,27 @@ def get_recomendation():
                 )
                 mysql.connection.commit()
                 cur.close()
-                print(f"insert place: {place_info['name']}")
+                
+            # check if info is already in the db
+            cur = mysql.connection.cursor()
+            cur.execute('''SELECT * from user_place WHERE user_id = %s AND place_id = %s''', (user_id, place_ids[i]))
+            data = cur.fetchall()
+            cur.close()
+            if len(data) != 0:
+                print(f"user: {user_id} and place: {place_ids[i]} already in db")
+            # insert into user_place table
+            else:
+                cur = mysql.connection.cursor()
+                cur.execute(
+                    '''
+                    INSERT INTO user_place (user_id, place_id)
+                    VALUES (%s, %s)
+                    ''',
+                    (user_id, place_ids[i])
+                )
+                mysql.connection.commit()
+                cur.close()
+                print(f"user: {user_id} and place: {place_ids[i]} inserted in db")
             places_info.append(place_info)
         all_places_info[query_place] = places_info
         if(len(places_info) > max_places):
@@ -226,6 +258,7 @@ def get_recomendation():
 
     # Return activities from extract_places microservice
     error, message = post_group_places(
+        prompt=activities,
         group_places=group_places, 
         places_type=places_type
     )
