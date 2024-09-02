@@ -1,0 +1,152 @@
+@import "../scss/base.scss";
+
+.home{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+}
+
+.info-home{
+    width: 1135px;
+    height: 500px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-card{
+    background-color: $color-platinum-1;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 10px;
+}
+
+.user-info{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: space-evenly;
+}
+.user-info div{
+    width: 400px;
+    height: 35px;
+    margin: 10px 0px 10px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.label-value{
+    width: 200px;
+    height: 25px;
+    border: 2px solid $color-dblue-1;
+    background-color: $color-uviolet-6;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.logout-button{
+    width: 100px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: $color-eblue-5;
+    color: $color-dblue-1;
+    font-size: $font-text;
+    font-weight: $font-heading3-w;
+    cursor: pointer;
+}
+
+.logout-button:hover{
+    color: $color-eblue-1;
+    background-color: $color-dblue-5;
+}
+
+.user-app-info-div{
+    background-color: $color-platinum-1;
+    width: 500px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+}
+
+.app-info-div{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.questions-div, .places-div{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 2px solid $color-dblue-1;
+    overflow-y: auto;
+}
+
+.user-app-title{
+    margin: 10px 0 10px 0;
+}
+
+.user-app-content{
+    width: 100%;
+    height: 350px;
+    text-align: center;
+    overflow-y: auto;
+    margin: 10px 0 10px 0;
+}
+
+.user-app-content p{
+    text-align: start;
+    padding: 10px 10px 10px 15px;
+    border-bottom: 1px solid $color-dblue-1;
+}
+
+.app-button{
+    width: 100px;
+    height: 35px;
+    border: 2px solid $color-dblue-1;
+    background-color: $color-eblue-5;
+    border-radius: 10px;
+    color: $color-dblue-1;
+    font-size: $font-text;
+    font-weight: $font-heading3-w;
+    text-align: center;
+    text-decoration: none;
+    line-height: 30px;
+    margin: 20px 0 20px 0;
+}
+
+.app-button:hover{
+    color: $color-eblue-1;
+    background-color: $color-dblue-5;
+}
+
+.app-button p{
+    color: $color-dblue-1;
+    font-weight: $font-heading3-w;
+}
+
+.home-links{
+    background-color: $color-platinum-1;
+    width: 300px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}

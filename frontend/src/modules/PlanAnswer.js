@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Link, BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import './PlanAnswer.css'
-import { PlacePlanAnswer } from "./PlacePlanAnswer";
+import './PlanAnswer.scss'
+import { PlacePlanAnswer } from "../components/PlacePlanAnswer";
 import {
     Box,
     Flex,
@@ -14,25 +13,38 @@ import {
 
 // Component to render an answer
 function PlanAnswer({answer, startPoint}){
-    console.log(answer.places_info);
+    // console.log(answer.places_info);
+    const [map, setMap] = useState('');
+    // console.log(plan)
+
+    const offMap = () => {
+        setMap(true);
+    }
+    const offMap2 = () => {
+        setMap(false);
+    }
+
+    if (map){
+        answer = <Map answer={answer} startPoint={startPoint} handleMap={offMap2}/>
+    }
+    else{
+        answer = <Answer answer={answer} startPoint={startPoint} handleMap={offMap}/>
+    }
     return(
-        <Router>
-            <Routes>
-                <Route path="/" element={<Answer answer={answer} startPoint={startPoint} />} />
-                <Route path="/map" element={<Map answer={answer} startPoint={startPoint} />} />
-            </Routes>
-        </Router>
+        <>
+            {answer}
+        </>
     )
 }
 
 // Final answer
-function Answer({answer, startPoint}){
+function Answer({answer, startPoint, handleMap}){
     return (
         <div className="plan-answer-div">
             <h1>Plan for your activity</h1>
-            <Link className='map-link' to="/map">
+            <div className='map-link' onClick={handleMap}>
                 <h3>Show plan in map</h3>
-            </Link>
+            </div>
             <p className="plan-answer">
                 {answer.content}
             </p>
@@ -49,7 +61,7 @@ function Answer({answer, startPoint}){
 }
 
 // Component to show a map
-function Map({answer, startPoint}){
+function Map({answer, startPoint, handleMap}){
     const [directionsResponse, setDirectionsResponse] = useState(null)
     const [distance, setDistance] = useState('')
     const [duration, setDuration] = useState('')
@@ -82,7 +94,7 @@ function Map({answer, startPoint}){
             travelMode: mode,
             // optimizeWaypoints: true,
             // eslint-disable-next-line no-undef
-            travelMode: google.maps.TravelMode.DRIVING,
+            // travelMode: google.maps.TravelMode.DRIVING,
         })
         setDirectionsResponse(results)
         setDistance(results.routes[0].legs[0].distance.text)
@@ -94,9 +106,9 @@ function Map({answer, startPoint}){
     }
     return (
         <div className='plan-map-div'>
-            <Link className='return-link' to="/">
+            <div className='return-link' onClick={handleMap}>
                 <h3>Return to plan</h3>
-            </Link>
+            </div>
             <p>{duration} min by {answer.places_info[0].mode}</p>
             <Flex
                 position='relative'

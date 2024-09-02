@@ -1,9 +1,11 @@
+@import "../scss/base.scss";
+
 :root {
   --form-control-color: rebeccapurple;
 }
 
-*{
-  box-sizing: border-box;
+.home-link-div{
+  background-color: wheat;
 }
 
 .app {
@@ -13,32 +15,37 @@
   width: 80%;
   align-items: center;
   justify-content: space-evenly;
-
   border: 2px solid black;
   border-radius: 10px;
-  background-color: #22282f91;
+  background-color: $color-dblue-4;
   color: #ffffff;
   overflow: auto;
   box-shadow: 3px 3px 20px 10px #1f282f91;
 }
 
+.app p, .app h1, .app h2, .app h3, .app label, .app li{
+    color: $color-platinum-1;
+}
+
 .sidebar {
   height: 100%;
   padding: 20px;
-  background-color: #2b2e3d;
+  background-color: $color-dblue-1;
   /* border: 5px solid #2b2e3d; */
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: 
-  linear-gradient(#111a25, #222) padding-box, 
+  // background: 
+  // linear-gradient(#111a25, #222) padding-box, 
 }
 
 .sidebar h2 {
   text-align: center;
   color: white;
+  font-size: 24px;
+  font-weight: 700;
 }
 
 .form {
@@ -100,17 +107,18 @@
 .div_button button{
   width: 50%;
   padding: 10px;
-  background-color: #e43f5a;
+  background-color: $color-uviolet-1;
   border: none;
   border-radius: 5px;
-  color: #ffffff;
+  color: $color-platinum-1;
   cursor: pointer;
   font-size: 16px;
   margin: 10px;
 }
 
-button:hover {
-  background-color: #ff2e63;
+.search-prompt:hover {
+  background-color: $color-platinum-1;
+  color: $color-uviolet-1;
 }
 
 .answer{
@@ -124,13 +132,14 @@ button:hover {
 }
 
 .model_answer{
-  width: auto;
+  width: 101%;
   height: auto;
   padding: 20px;
   display: grid;
   grid-template-rows: auto auto;
   align-items: center;
   justify-content: space-around;
+  overflow: auto; 
 }
 
 .model_answer h1 {
@@ -160,7 +169,7 @@ button:hover {
   width: 100%;
   height: auto;
   /* Habilita el scroll vertical */
-  overflow-y: auto; 
+  // overflow-y: auto; 
   background-color: #2f2f2f38;
   border-radius: 5px;
 }

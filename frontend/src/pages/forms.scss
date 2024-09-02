@@ -1,0 +1,86 @@
+@import "../scss/base.scss";
+
+.signup-div, .login-div{
+    width: 700px;
+    height: 500px;
+    background-color: $color-platinum-1;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.singup-title, .login-title{
+    padding: 10px 0px 10px 0px;
+}
+
+.signup-form, .login-form{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-signup-div{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.user-info-div, .user-credentials-div, .user-login-div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.signup-form div, .login-form div{
+    margin: 0;
+    padding: 15px 0px 15px 0;
+}
+
+.user-signup-div input, .user-login-div input{
+    width: $input-w;
+    height: $input-h;
+    border-radius: 5px;
+    color: $color-eblue-1;
+    background-color: $color-uviolet-5;
+}
+
+.signup-button, .login-button{
+    width: 100px;
+    height: 35px;
+    border-radius: 10px;
+    background-color: $color-eblue-5;
+    color: $color-dblue-1;
+    font-size: $font-text;
+    font-weight: $font-heading3-w;
+    cursor: pointer;
+}
+
+.login-button:hover, .signup-button:hover{
+    color: $color-eblue-1;
+    background-color: $color-dblue-5;
+}
+
+.signup-footer, .login-footer{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.signup-footer p, .login-footer p{
+    padding: 10px 5px 10px 10px;
+}
+
+.signup-link, .login-link{
+    padding: 10px 10px 10px 5px;
+}

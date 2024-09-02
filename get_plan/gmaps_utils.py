@@ -36,6 +36,7 @@ def get_places(query_place, coord, radius: int = 25, language: str="spanish"):
 
 ########### getting directions 
 def get_directions(origin, place_id, mode: str = "walking"):
+    mode = mode.lower()
     direction = gmaps.directions(origin=origin, destination=f"place_id:{place_id}", mode=mode)
 
     distance = direction[0]['legs'][0]['distance']['text']
@@ -59,17 +60,17 @@ def get_place_summary(place_name, place_id):
         phone_number = place['result']['international_phone_number']
     except KeyError:
         phone_number = None
-    try:
-        opened = place['result']['current_opening_hours']['open_now']
-    except KeyError:
-        opened = None
+    # try:
+    #     opened = place['result']['current_opening_hours']['open_now']
+    # except KeyError:
+    #     opened = None
     place_info = {
         "name": place_name,
         "place_id": place_id,
         "rating": rating,
         "maps_url": maps_url,
-        "phone_number": phone_number,
-        "opened": opened
+        "phone_number": phone_number
+        # "opened": opened
     }
 
     # json_object = json.dumps(place_info, indent=4)

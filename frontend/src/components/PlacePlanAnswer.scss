@@ -14,10 +14,15 @@
     width: 170px;
 }
 
+.place-answer-div p{
+    margin: 10px;
+}
+
 .place-answer-div a{
     color: #80c1ef;
     width: 100px;
     text-align: center; 
+    margin: 10px;
 }
 
 @media (max-width: 800px){
