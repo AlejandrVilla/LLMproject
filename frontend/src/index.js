@@ -11,7 +11,7 @@ import { Signup } from './pages/SignUpPage';
 import './index.scss';
 
 const libraries = ['places'];
-const apiKey  = "AIzaSyBrdsAtDi9M11op_ge4jRfLqHxZ_hMr32g";
+const apiKey  = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const router = createBrowserRouter([
   {

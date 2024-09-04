@@ -13,6 +13,7 @@ langchain_utils.py
 filter/distilbert-filter
 frontend_tmp
 *.xml
+*.env
 flask_session
 # dependencies
 # /node_modules

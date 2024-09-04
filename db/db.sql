@@ -100,32 +100,3 @@ SELECT * FROM place;
 SELECT * FROM user;
 SELECT * FROM user_place;
 SELECT * FROM prompt;
-
-INSERT INTO `user` (`username`,`password`,`email`,`name`,`last_name`) VALUES
-('avherrera','123456789','aleviherrera@gmail.com','Alejandro','Villa'),
-('avhe','123456789','avh@gmail.com','Antonio','Herrera');
-
--- ---
--- Table Properties
--- ---
-
--- ALTER TABLE `user` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `place` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `prompt` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `answer` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE `user_place` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
--- ---
--- Test Data
--- ---
-
--- INSERT INTO `user` (`user_id`,`username`,`password`,`name`,`last_name`,`created_at`) VALUES
--- ('','','','','','');
--- INSERT INTO `place` (`place_id`,`placename`,`rating`,`phone`,`maps_url`,`prompt_id_prompt`) VALUES
--- ('','','','','','');
--- INSERT INTO `prompt` (`prompt_id`,`created_at`,`user_id`) VALUES
--- ('','','');
--- INSERT INTO `answer` (`answer_id`,`created_at`,`prompt_id`) VALUES
--- ('','','');
--- INSERT INTO `user_place` (`user_id`,`place_id`) VALUES
--- ('','');

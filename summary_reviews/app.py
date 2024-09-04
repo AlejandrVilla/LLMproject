@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv('./env.txt')
+load_dotenv('./.env')
 from flask import Flask, request, json, jsonify
 from langchain.prompts import (
     ChatPromptTemplate,
