@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv('./env.txt')
+load_dotenv('./.env')
 import requests
 from flask import Flask, request, jsonify, session, json
 from flask_cors import CORS, cross_origin

@@ -2,7 +2,7 @@
 ## ADD YOUR API KEYS
 - Create a GoogleMaps API Key
 - Create an OpenAI API key
-- ADD your API keys to an env.txt file and copy it to the directories
+- ADD your API keys to an .env file and copy it to the directories
     - extract_places
     - get_recomendation
     - summary_reviews
